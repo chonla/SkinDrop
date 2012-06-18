@@ -1,0 +1,33 @@
+<html>
+<head>
+<title> jQuery - SkinDrop </title>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.skindrop.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('select.ex_1').skindrop();
+});
+</script>
+<style type="text/css">
+.skindrop_txt_wrapper { box-sizing:border-box;display:block;float:left;border:1px solid #777;border-right:none;width:180px;height:16px;font-size:10pt;padding:2px; }
+.skindrop_trigger { box-sizing:border-box;display:block;float:left;width:16px;height:20px;background-image:url('img/dropdown.gif');background-repeat:no-repeat;background-position:center center;border:1px solid #777;border-left:none; }
+.skindrop_opt_wrapper { display:block;width:196px;height:250px;border:1px solid #ccc;background-color:#fff; }
+.skindrop_opt_wrapper ul { margin:0px;padding:0px;list-style:none; }
+.skindrop_opt_wrapper ul li { font-size:10pt;cursor:pointer;padding:2px; }
+.skindrop_opt_wrapper ul li:hover { background-color:#eee; }
+.skindrop_opt_wrapper ul li.skindrop_selected { background-color:#dadada;color:#555; }
+</style>
+</head>
+
+<body>
+<select class="ex_1">
+<option>Option 1</option>
+<option>Option 2</option>
+<option>Option 3</option>
+<option>Option 4</option>
+<option>Option 5</option>
+<option>Option 6</option>
+<option>Option 7</option>
+</select>
+</body>
+</html>
