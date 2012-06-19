@@ -14,6 +14,8 @@ Revision: 2012.06.16.10.00
 			triggerText : '',
 			onItemSelected : null,
 			onReady : null,
+			onFold : null,
+			onUnfold : null,
 			className : ''
 		};
 		options = $.extend(defaults, options);
@@ -53,9 +55,14 @@ Revision: 2012.06.16.10.00
 		$('.skindrop_trigger, .skindrop_txt_wrapper').live('click', function(){
 			active_id = $(this).attr('skindrop_id');
 
+			$('.skindrop_wrapper[skindrop_id="'+active_id+'"]').toggleClass('unfold');
+
 			// toggle dropdown
 			if ($('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').is(':visible')) {
 				$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').hide();
+				if ($.isFunction(options.onFold)) {
+					options.onFold(this);
+				}
 			} else {
 				p = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').position();
 				h = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').height();
@@ -67,11 +74,16 @@ Revision: 2012.06.16.10.00
 				if (isNaN(bb)) bb = 0;
 
 				$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":"0px"}).show();
+				if ($.isFunction(options.onUnfold)) {
+					options.onFold(this);
+				}
 			}
 		});
 
 		$('.skindrop_opt').live('click', function(){
 			active_id = $(this).addClass('skindrop_selected').parents('div.skindrop_opt_wrapper').attr('skindrop_id');
+
+			$('.skindrop_wrapper[skindrop_id="'+active_id+'"]').toggleClass('unfold');
 
 			// update selected item
 			clicked_idx = $(this).index();
@@ -85,6 +97,10 @@ Revision: 2012.06.16.10.00
 
 			if ($.isFunction(options.onItemSelected)) {
 				options.onItemSelected(this);
+			}
+
+			if ($.isFunction(options.onFold)) {
+				options.onFold(this);
 			}
 		});
 
