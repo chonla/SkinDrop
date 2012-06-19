@@ -4,7 +4,7 @@ Works for IE9, FF13, Chrome19
 By: Chonla
 Create Date: 15 June 2012
 URL: http://blog.chonla.com
-Revision: 2012.06.16.10.00
+Revision: 2012.06.16.18.00
 */
 
 (function($) {
@@ -16,13 +16,19 @@ Revision: 2012.06.16.10.00
 			onReady : null,
 			onFold : null,
 			onUnfold : null,
-			className : ''
+			onTextFocus : null,
+			onTextBlur : null,
+			className : '',
+			textbox : false
 		};
 		options = $.extend(defaults, options);
+		ids = [];
 		id = 0;
 		this.each(function() {
 			// create a new id
 			ctrl_id = 'skindrop_ctrl_'+id++;
+
+			ids.push(ctrl_id);
 
 			// assign uid to control
 			$(this).attr('skindrop_id', ctrl_id).addClass(options.className);
@@ -33,7 +39,11 @@ Revision: 2012.06.16.10.00
 			// build up the text holder
 			txt = $('option:selected', this).html();
 			idx = $('option:selected', this).index();
-			txt_wrap = $('<div class="skindrop_txt_wrapper"></div>').addClass(options.className).attr('skindrop_id', ctrl_id).html(txt);
+			if (options.textbox) {
+				txt_wrap = $('<input type="text" class="skindrop_txtbox_wrapper">').addClass(options.className).attr('skindrop_id', ctrl_id);
+			} else {
+				txt_wrap = $('<div class="skindrop_txt_wrapper"></div>').addClass(options.className).attr('skindrop_id', ctrl_id).html(txt);
+			}
 
 			// build up the trigger
 			trigger = $('<div class="skindrop_trigger"></div>').addClass(options.className).attr('skindrop_id', ctrl_id).html(options.triggerText);
@@ -75,15 +85,41 @@ Revision: 2012.06.16.10.00
 
 				$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":"0px"}).show();
 				if ($.isFunction(options.onUnfold)) {
-					options.onFold(this);
+					options.onUnfold(this);
 				}
 			}
 		});
 
-		$('.skindrop_opt').live('click', function(){
+		$('.skindrop_txtbox_wrapper').live('focus', function(){
+			active_id = $(this).attr('skindrop_id');
+			$('.skindrop_wrapper[skindrop_id="'+active_id+'"]').addClass('unfold');
+			p = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').position();
+			h = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').height();
+			w = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').width();
+			bt = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-top-width'), 10);
+			bb = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-bottom-width'), 10);
+
+			if (isNaN(bt)) bt = 0;
+			if (isNaN(bb)) bb = 0;
+
+			$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":"0px"}).show();
+			if ($.isFunction(options.onTextFocus)) {
+				options.onTextFocus(this);
+			}
+			if ($.isFunction(options.onUnfold)) {
+				options.onUnfold(this);
+			}
+		}).live('blur', function(){
+			if ($.isFunction(options.onTextBlur)) {
+				options.onTextBlur(this);
+			}
+		});
+
+		$('.skindrop_opt').live('click', function(e){
 			active_id = $(this).addClass('skindrop_selected').parents('div.skindrop_opt_wrapper').attr('skindrop_id');
 
 			$('.skindrop_wrapper[skindrop_id="'+active_id+'"]').toggleClass('unfold');
+			$('.skindrop_txtbox_wrapper[skindrop_id="'+active_id+'"]');
 
 			// update selected item
 			clicked_idx = $(this).index();
@@ -91,7 +127,11 @@ Revision: 2012.06.16.10.00
 			$(this).parents('ul').find('li:not(:eq('+clicked_idx+'))').removeClass('skindrop_selected');
 
 			// update text displayed
-			$('div.skindrop_txt_wrapper[skindrop_id="'+active_id+'"]').html($('option:selected', 'select[skindrop_id="'+active_id+'"]').html());
+			if (options.textbox) {
+				$('.skindrop_txtbox_wrapper[skindrop_id="'+active_id+'"]').val($('option:selected', 'select[skindrop_id="'+active_id+'"]').html());
+			} else {
+				$('.skindrop_txt_wrapper[skindrop_id="'+active_id+'"]').html($('option:selected', 'select[skindrop_id="'+active_id+'"]').html());
+			}
 
 			$(this).addClass('skindrop_selected').parents('div.skindrop_opt_wrapper').hide();
 
@@ -106,6 +146,38 @@ Revision: 2012.06.16.10.00
 
 		if ($.isFunction(options.onReady)) {
 			options.onReady($('.skindrop_wrapper'));
+		}
+
+		return {
+			id:ids,
+			fold:function() {
+				$(this.id).each(function(){
+					active_id = this;
+					$('.skindrop_wrapper[skindrop_id="'+active_id+'"]').removeClass('unfold');
+					$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').hide();
+					if ($.isFunction(options.onFold)) {
+						options.onFold(this);
+					}
+				});
+			},
+			unfold:function() {
+				$(this.id).each(function(){
+					active_id = this;
+					p = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').position();
+					h = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').height();
+					w = $('.skindrop_wrapper[skindrop_id="'+active_id+'"]').width();
+					bt = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-top-width'), 10);
+					bb = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-bottom-width'), 10);
+
+					if (isNaN(bt)) bt = 0;
+					if (isNaN(bb)) bb = 0;
+
+					$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":"0px"}).show();
+					if ($.isFunction(options.onUnfold)) {
+						options.onUnfold(this);
+					}
+				});
+			}
 		}
 	};
 })(jQuery);
