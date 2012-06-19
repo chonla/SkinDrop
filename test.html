@@ -5,13 +5,14 @@
 <script type="text/javascript" src="jquery.skindrop.js"></script>
 <script type="text/javascript">
 $(function(){
-	$('select.ex_1').skindrop();
+	$('select.ex_1').skindrop({className:'sample1'});
 });
 </script>
 <style type="text/css">
-.skindrop_txt_wrapper { box-sizing:border-box;display:block;float:left;border:1px solid #777;border-right:none;width:180px;height:16px;font-size:10pt;padding:2px; }
+.skindrop_wrapper { box-sizing:border-box;display:block;overflow:auto; }
+.skindrop_txt_wrapper { box-sizing:border-box;display:block;float:left;border:1px solid #777;border-right:none;width:180px;height:20px;font-size:10pt;padding:2px; }
 .skindrop_trigger { box-sizing:border-box;display:block;float:left;width:16px;height:20px;background-image:url('img/dropdown.gif');background-repeat:no-repeat;background-position:center center;border:1px solid #777;border-left:none; }
-.skindrop_opt_wrapper { display:block;width:196px;height:250px;border:1px solid #ccc;background-color:#fff; }
+.skindrop_opt_wrapper { display:block;width:196px;border:1px solid #ccc;background-color:#fff; }
 .skindrop_opt_wrapper ul { margin:0px;padding:0px;list-style:none; }
 .skindrop_opt_wrapper ul li { font-size:10pt;cursor:pointer;padding:2px; }
 .skindrop_opt_wrapper ul li:hover { background-color:#eee; }

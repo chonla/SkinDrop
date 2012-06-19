@@ -1,9 +1,10 @@
 /*
 SkinDrop - Skin your dropdown
-Works for ?
+Works for IE9, FF13, Chrome19
 By: Chonla
 Create Date: 15 June 2012
 URL: http://blog.chonla.com
+Revision: 2012.06.16.10.00
 */
 
 (function($) {
@@ -12,7 +13,8 @@ URL: http://blog.chonla.com
 		var defaults = {
 			triggerText : '',
 			onItemSelected : null,
-			onReady : null
+			onReady : null,
+			className : ''
 		};
 		options = $.extend(defaults, options);
 		id = 0;
@@ -20,26 +22,22 @@ URL: http://blog.chonla.com
 			// create a new id
 			ctrl_id = 'skindrop_ctrl_'+id++;
 
-			// create wrapper
-			w = $('<div class="skindrop_virtual_wrapper"></div>');
-			$(this).before(w).appendTo(w);
-
 			// assign uid to control
-			$(this).attr('skindrop_id', ctrl_id);
+			$(this).attr('skindrop_id', ctrl_id).addClass(options.className);
 
 			// build up drop wrapper
-			drop_wrap = $('<div class="skindrop_wrapper"></div>').attr('skindrop_id', ctrl_id);
+			drop_wrap = $('<div class="skindrop_wrapper"></div>').addClass(options.className).attr('skindrop_id', ctrl_id);
 
 			// build up the text holder
 			txt = $('option:selected', this).html();
 			idx = $('option:selected', this).index();
-			txt_wrap = $('<div class="skindrop_txt_wrapper"></div>').attr('skindrop_id', ctrl_id).html(txt);
+			txt_wrap = $('<div class="skindrop_txt_wrapper"></div>').addClass(options.className).attr('skindrop_id', ctrl_id).html(txt);
 
 			// build up the trigger
-			trigger = $('<div class="skindrop_trigger"></div>').attr('skindrop_id', ctrl_id).html(options.triggerText);
+			trigger = $('<div class="skindrop_trigger"></div>').addClass(options.className).attr('skindrop_id', ctrl_id).html(options.triggerText);
 
 			// build up the list
-			opt_wrap = $('<div class="skindrop_opt_wrapper"><ul></ul></div>').attr('skindrop_id', ctrl_id).css({'position':'absolute'}).hide();
+			opt_wrap = $('<div class="skindrop_opt_wrapper"><ul></ul></div>').addClass(options.className).attr('skindrop_id', ctrl_id).css({'position':'relative','clear':'both'}).hide();
 			opt_wrap_ul = opt_wrap.find('ul');
 			$('option', this).each(function(i) {
 				selected = (idx==i)?' skindrop_selected':'';
@@ -47,9 +45,8 @@ URL: http://blog.chonla.com
 			});
 
 			// attach to page
-			drop_wrap.append(txt_wrap).append(trigger);
-			$('body').append(opt_wrap);
-			$(this).before(drop_wrap).hide();
+			drop_wrap.append(txt_wrap).append(trigger).append(opt_wrap);
+			$(this).before(drop_wrap).appendTo(drop_wrap).hide();
 		});
 
 		// bind events
@@ -66,7 +63,10 @@ URL: http://blog.chonla.com
 				bt = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-top-width'), 10);
 				bb = parseInt($('.skindrop_wrapper[skindrop_id="'+active_id+'"]').css('border-bottom-width'), 10);
 
-				$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":p.left+'px',"top":(p.top+h+bt+bb)+'px',"width":w+'px'}).show();
+				if (isNaN(bt)) bt = 0;
+				if (isNaN(bb)) bb = 0;
+
+				$('.skindrop_opt_wrapper[skindrop_id="'+active_id+'"]').css({"left":"0px"}).show();
 			}
 		});
 
